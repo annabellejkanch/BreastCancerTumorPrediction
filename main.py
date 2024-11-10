@@ -41,11 +41,20 @@ def predict():
             else:
                 return render_template('index.html', prediction_text="All fields must be filled in.", features=features)
 
+        # Print the input data for debugging
+        print("Input Data: ", input_data)
+
         # Impute missing values in the input data using the same imputer as used in training
         input_data_imputed = imputer.transform([input_data])
 
+        # Print the imputed data for debugging
+        print("Imputed Data: ", input_data_imputed)
+
         # Scale the input data using the scaler
         input_data_scaled = scaler.transform(input_data_imputed)
+
+        # Print the scaled data for debugging
+        print("Scaled Data: ", input_data_scaled)
 
         # Make the prediction using the trained model
         prediction = model.predict(input_data_scaled)
@@ -56,7 +65,8 @@ def predict():
         return render_template('index.html', prediction_text=f"The tumor is {result}", features=features)
 
     except Exception as e:
-        print("Error:", str(e))  # Log error message for debugging
+        # Log the error for debugging
+        print(f"Error: {str(e)}")
         return render_template('index.html', prediction_text="Error in input data. Please check the values and try again.", features=features)
 
 if __name__ == "__main__":
