@@ -1,20 +1,15 @@
-from flask import Flask, render_template, request
-import numpy as np
-import pandas as pd
-from sklearn.preprocessing import StandardScaler
+from flask import Flask, render_template, request, jsonify
 from tensorflow.keras.models import load_model
 import joblib
+import numpy as np
 
 app = Flask(__name__)
 
-# Load the pre-trained model
+# Load the pre-trained model and scaler
 model = load_model('mlp_model.h5')
-
-# Load the scaler used during training
 scaler = joblib.load('scaler.pkl')
-imputer = joblib.load('imputer.pkl')
 
-# List of feature names in the same order as used in the model
+# List of features
 features = ['radius_mean', 'texture_mean', 'perimeter_mean', 'area_mean', 'smoothness_mean', 'compactness_mean',
             'concavity_mean', 'concave_points_mean', 'symmetry_mean', 'fractal_dimension_mean', 'radius_se',
             'texture_se', 'perimeter_se', 'area_se', 'smoothness_se', 'compactness_se', 'concavity_se', 
@@ -23,51 +18,26 @@ features = ['radius_mean', 'texture_mean', 'perimeter_mean', 'area_mean', 'smoot
             'concave_points_worst', 'symmetry_worst', 'fractal_dimension_worst']
 
 @app.route('/')
-def home():
+def index():
     return render_template('index.html', features=features)
 
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
-        # Retrieve form data from user input
-        input_data = []
-        for feature in features:
-            value = request.form.get(feature)
-            if value:
-                try:
-                    input_data.append(float(value))  # Convert to float
-                except ValueError:
-                    return render_template('index.html', prediction_text=f"Invalid input for {feature}. Please enter numeric values.", features=features)
-            else:
-                return render_template('index.html', prediction_text="All fields must be filled in.", features=features)
+        # Extract user input from the form based on feature names
+        feature_values = [float(request.form.get(feature)) for feature in features]
+        
+        # Preprocess the input (scaling)
+        features_scaled = scaler.transform([feature_values])
 
-        # Print the input data for debugging
-        print("Input Data: ", input_data)
+        # Make prediction
+        prediction = model.predict(features_scaled)
+        diagnosis = 'Malignant' if prediction[0] > 0.5 else 'Benign'
 
-        # Impute missing values in the input data using the same imputer as used in training
-        input_data_imputed = imputer.transform([input_data])
-
-        # Print the imputed data for debugging
-        print("Imputed Data: ", input_data_imputed)
-
-        # Scale the input data using the scaler
-        input_data_scaled = scaler.transform(input_data_imputed)
-
-        # Print the scaled data for debugging
-        print("Scaled Data: ", input_data_scaled)
-
-        # Make the prediction using the trained model
-        prediction = model.predict(input_data_scaled)
-
-        # Convert the prediction to "Malignant" or "Benign"
-        result = "Malignant" if prediction[0] > 0.5 else "Benign"
-
-        return render_template('index.html', prediction_text=f"The tumor is {result}", features=features)
+        return jsonify({'prediction': diagnosis})
 
     except Exception as e:
-        # Log the error for debugging
-        print(f"Error: {str(e)}")
-        return render_template('index.html', prediction_text="Error in input data. Please check the values and try again.", features=features)
+        return jsonify({'error': str(e)})
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+if __name__ == '__main__':
+    app.run(debug=True)
