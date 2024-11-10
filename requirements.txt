@@ -4,4 +4,4 @@ scikit-learn==1.5.2  # Replace with the appropriate version of scikit-learn
 numpy==2.1.3  # Replace with the appropriate version of numpy
 pandas==2.2.3  # Replace with the appropriate version of pandas
 joblib==1.4.2  # Replace with the appropriate version of joblib
-gunicorn==20.2.0  # Replace with the appropriate version of gunicorn
+gunicorn==23.0.0  # Replace with the appropriate version of gunicorn
