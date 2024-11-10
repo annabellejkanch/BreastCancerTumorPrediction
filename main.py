@@ -11,7 +11,6 @@ app = Flask(__name__)
 model = load_model('mlp_model.h5')
 
 # StandardScaler used during model training (you should save and load this too)
-scaler = StandardScaler()
 scaler = joblib.load('scaler.pkl')
 
 
