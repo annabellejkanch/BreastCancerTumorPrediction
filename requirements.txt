@@ -1,4 +1,4 @@
-Flask==2.x
+Flask==2.x.x
 tensorflow==2.x
 scikit-learn==1.x
 numpy==1.x
