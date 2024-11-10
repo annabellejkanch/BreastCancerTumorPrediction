@@ -12,6 +12,7 @@ model = load_model('mlp_model.h5')
 
 # Load the scaler used during training
 scaler = joblib.load('scaler.pkl')
+imputer = joblib.load('imputer.pkl')
 
 # List of feature names in the same order as used in the model
 features = ['radius_mean', 'texture_mean', 'perimeter_mean', 'area_mean', 'smoothness_mean', 'compactness_mean',
@@ -29,20 +30,33 @@ def home():
 def predict():
     try:
         # Retrieve form data from user input
-        input_data = [float(request.form.get(feature)) for feature in features]
+        input_data = []
+        for feature in features:
+            value = request.form.get(feature)
+            if value:
+                try:
+                    input_data.append(float(value))  # Convert to float
+                except ValueError:
+                    return render_template('index.html', prediction_text=f"Invalid input for {feature}. Please enter numeric values.", features=features)
+            else:
+                return render_template('index.html', prediction_text="All fields must be filled in.", features=features)
 
-        # Scale features using the same scaler as used in training
-        input_data_scaled = scaler.transform([input_data])
+        # Impute missing values in the input data using the same imputer as used in training
+        input_data_imputed = imputer.transform([input_data])
 
-        # Make prediction using the model
+        # Scale the input data using the scaler
+        input_data_scaled = scaler.transform(input_data_imputed)
+
+        # Make the prediction using the trained model
         prediction = model.predict(input_data_scaled)
 
-        # Convert prediction to "Malignant" or "Benign"
+        # Convert the prediction to "Malignant" or "Benign"
         result = "Malignant" if prediction[0] > 0.5 else "Benign"
 
         return render_template('index.html', prediction_text=f"The tumor is {result}", features=features)
 
     except Exception as e:
+        print("Error:", str(e))  # Log error message for debugging
         return render_template('index.html', prediction_text="Error in input data. Please check the values and try again.", features=features)
 
 if __name__ == "__main__":
