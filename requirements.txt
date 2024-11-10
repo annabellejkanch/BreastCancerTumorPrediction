@@ -1,0 +1,5 @@
+Flask==2.x
+tensorflow==2.x
+scikit-learn==1.x
+numpy==1.x
+joblib==1.x
