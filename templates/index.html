@@ -15,7 +15,11 @@
         <button type="submit">Predict</button>
     </form>
 
-    <div id="predictionResult"></div>
+    <div id="predictionResult">
+        {% if prediction %}
+            <h2>Prediction: {{prediction}}</h2>
+        {% endif %}
+    </div>
 
     <script>
         // You can add AJAX here to submit the form without reloading the page
