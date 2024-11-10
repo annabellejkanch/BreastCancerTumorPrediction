@@ -3,18 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tumor Prediction</title>
+    <title>Tumor Diagnosis Prediction</title>
 </head>
 <body>
-    <h1>Breast Cancer Tumor Prediction</h1>
-    <form method="POST" action="/predict">
+    <h1>Tumor Diagnosis Prediction</h1>
+    <form action="/predict" method="POST">
         {% for feature in features %}
-            <label for="{{ feature }}">{{ feature.replace('_', ' ').title() }}:</label><br>
-            <input type="text" id="{{ feature }}" name="{{ feature }}"><br>
+            <label for="{{ feature }}">{{ feature.replace('_', ' ').title() }}:</label>
+            <input type="text" id="{{ feature }}" name="{{ feature }}" required><br>
         {% endfor %}
-        <input type="submit" value="Predict">
+        <button type="submit">Predict</button>
     </form>
 
-    <h2>{{ prediction_text }}</h2>
+    <div id="predictionResult"></div>
+
+    <script>
+        // You can add AJAX here to submit the form without reloading the page
+        // and display the result dynamically in the 'predictionResult' div.
+    </script>
 </body>
 </html>
