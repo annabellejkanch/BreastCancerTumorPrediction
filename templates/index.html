@@ -15,15 +15,20 @@
         <button type="submit">Predict</button>
     </form>
 
-    <div id="predictionResult">
-        {% if prediction %}
-            <h2>Prediction: {{prediction}}</h2>
-        {% endif %}
-    </div>
-
+    {% if prediction %}
+        <div id="predictionResult">
+            <h2>Prediction: {{ prediction }}</h2>
+        </div>
+    {% endif %}
+    
+    {% if error %}
+        <div id="errorResult">
+            <h2>Error: {{ error }}</h2>
+        </div>
+    {% endif %}
+    
     <script>
-        // You can add AJAX here to submit the form without reloading the page
-        // and display the result dynamically in the 'predictionResult' div.
+        // Optional: Add JavaScript for AJAX to handle form submission dynamically without page refresh
     </script>
 </body>
 </html>
