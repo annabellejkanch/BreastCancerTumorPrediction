@@ -4,6 +4,7 @@ import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from tensorflow.keras.models import load_model
 import joblib
+import logging 
 
 app = Flask(__name__)
 
