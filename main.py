@@ -25,28 +25,22 @@ def home():
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    try:
-        # Get values from the form
-        feature_val = [float(x) for x in request.form.values()]
+    # Get values from the form
+    feature_val = [float(x) for x in request.form.values()]
+    features_df = pd.DataFrame([feature_val], columns=features)
                
-        features_df = pd.DataFrame([feature_val], columns=features)
+    scaled = scaler.transform(features_df)
                
-        scaled = scaler.transform(features_df)
-               
-        print(f"Features Shape: {features_df.shape}")
+    print(f"Features Shape: {features_df.shape}")
            
                
-        # Make prediction
-        prediction = model.predict(scaled)
-        
-        # Convert prediction to string
-        output = str(prediction[0][0])
-        
-        return render_template('index.html', 
-                             prediction_text=f'Predicted Tumor Type: {output}')
-    except Exception as e:
-        return render_template('index.html', 
-                             prediction_text=f'Error: {str(e)}')
+           # Make prediction
+    prediction = model.predict(scaled)
+           
+           # Convert prediction to string
+    output = str(prediction)
+           
+    return render_template('index.html', prediction_text=f'Predicted Tumor Type: {output}')
 
 
 if __name__ == '__main__':
