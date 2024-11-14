@@ -38,11 +38,11 @@ def home():
 @app.route('/predict', methods=['GET', 'POST'])
 def predict():
     if request.method == 'POST':
-        # Get values from the form as a dictionary and convert them to a list of floats
+        # Get the form data, make predictions, etc.
         to_predict_list = request.form.to_dict()
         to_predict_list = list(to_predict_list.values())
         to_predict_list = list(map(float, to_predict_list))  # Ensure the input is floats
-        
+
         # Use the ValuePredictor function to get the prediction
         result = ValuePredictor(to_predict_list)
         
@@ -52,8 +52,12 @@ def predict():
         else:
             prediction = 'Benign Tumor'
         
-        # Return the result to the user on the prediction page
         return render_template("predict.html", prediction=prediction)
+    
+    # Handle GET request to just show the form
+    return render_template("index.html", features=features)
+
+
 
 #if __name__ == '__main__':
     # Use PORT environment variable if available (for Render)
