@@ -27,8 +27,23 @@
         </div>
     {% endif %}
     
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        // Optional: Add JavaScript for AJAX to handle form submission dynamically without page refresh
+        $('form').submit(function(e) {
+            e.preventDefault();  // Prevent page reload
+            var formData = $(this).serialize();  // Serialize form data
+    
+            $.ajax({
+                url: '/predict',
+                method: 'POST',
+                data: formData,
+                success: function(response) {
+                    // Update the page with the prediction or error message
+                    $('#predictionResult').html($(response).find('#predictionResult').html());
+                    $('#errorResult').html($(response).find('#errorResult').html());
+                }
+            });
+        });
     </script>
 </body>
 </html>
