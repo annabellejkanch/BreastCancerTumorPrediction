@@ -51,8 +51,5 @@ def predict():
 
 if __name__ == '__main__':
     # Use PORT environment variable if available (for Render)
-    port = int(os.environ.get('PORT', 5000))
-    const port = process.env.PORT || 5000;
-    app.listen(port, () => {console.log(`Example app listening on port ${port}`)
-           })       
+    port = int(os.environ.get('PORT', 5000))       
     app.run(host='0.0.0.0', port=port)
