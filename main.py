@@ -4,7 +4,7 @@ import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from tensorflow.keras.models import load_model
 import joblib
-import logging 
+
 
 app = Flask(__name__)
 
@@ -20,21 +20,18 @@ features = ['radius_mean', 'texture_mean', 'perimeter_mean', 'area_mean', 'smoot
 model = load_model('mlp_model.h5')
 scaler = joblib.load('scaler.pkl')
 
-logging.basicConfig(level=logging.DEBUG)
-
 @app.route('/')
 def index():
     return render_template('index.html', features=features)
 
-@app.route('/predict', methods=['POST'])
+@app.route('/', methods=['POST'])
 def predict():
     try:
         # Extract user input from the form based on feature names
         feature_values = [float(request.form.get(feature)) for feature in features]
         input_df = pd.DataFrame([feature_values], columns=features)
-        print(input_df.shape)
-        logging.debug(f"Recieved Input: {input_df}")
-        logging.debug(f"Input Shape: {input_df.shape}")
+        print(f"Recieved Input: {input_df}")
+        print(f"Input Shape: {input_df.shape}")
         
         # Preprocess the input (scaling)
         features_scaled = scaler.transform(input_df)
@@ -42,14 +39,14 @@ def predict():
         # Make prediction
         prediction = model.predict(features_scaled)
         diagnosis = 'Malignant' if prediction[0] > 0.5 else 'Benign'
-        logging.debug(f"Prediction: {diagnosis}")        
+        print(f"Prediction: {diagnosis}")        
 
         # Render the result back to the template
         return render_template('predict.html', prediction=diagnosis)
 
     except Exception as e:
         # Handle any errors gracefully
-        logging.error(f"Error: {str(e)}")        
+        print(f"Error: {str(e)}")        
         return render_template('predict.html', error=str(e))
 
 if __name__ == '__main__':
