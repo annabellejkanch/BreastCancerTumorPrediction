@@ -28,9 +28,10 @@ def predict():
     try:
         # Extract user input from the form based on feature names
         feature_values = [float(request.form.get(feature)) for feature in features]
+        input_df = pd.DataFrame([feature_values], columns=features)
         
         # Preprocess the input (scaling)
-        features_scaled = scaler.transform([feature_values])
+        features_scaled = scaler.transform([input_df])
 
         # Make prediction
         prediction = model.predict(features_scaled)
