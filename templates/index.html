@@ -64,7 +64,14 @@
     </style>
 </head>
 <body>
-    <h2>Prediction Result: {{ prediction }}</h2>
-
+    <form action="/predict" method="POST">
+        {% for feature in features %}
+            <div class="form-group">
+                <label for="{{ feature }}">{{ feature.replace('_', ' ').title() }}:</label>
+                <input type="text" id="{{ feature }}" name="{{ feature }}" required>
+            </div>
+        {% endfor %}
+        <button type="submit">Predict</button>
+    </form>
 </body>
 </html>
