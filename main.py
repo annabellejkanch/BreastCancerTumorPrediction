@@ -31,7 +31,7 @@ def ValuePredictor(to_predict_list):
     
     return result[0][0]
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def home():
     return render_template('index.html', features=features)
 
@@ -41,7 +41,8 @@ def predict():
         # Get the form data, make predictions, etc.
         to_predict_list = request.form.to_dict()
         to_predict_list = list(to_predict_list.values())
-        to_predict_list = list(map(float, to_predict_list))  # Ensure the input is floats
+        to_predict_list = list(map(float, to_predict_list))# Ensure the input is floats
+        print(to_predict_list) 
 
         # Use the ValuePredictor function to get the prediction
         result = ValuePredictor(to_predict_list)
@@ -52,9 +53,8 @@ def predict():
         else:
             prediction = 'Benign Tumor'
         
-        return render_template("predict.html", prediction=prediction)
+        return render_template("predict.html", prediction = prediction)
     
-    # Handle GET request to just show the form
     return render_template("index.html", features=features)
 
 
