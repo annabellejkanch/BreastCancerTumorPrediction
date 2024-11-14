@@ -35,7 +35,7 @@ def ValuePredictor(to_predict_list):
 def home():
     return render_template('index.html', features=features)
 
-@app.route('/predict', methods=['POST'])
+@app.route('/predict', methods=['GET', 'POST'])
 def predict():
     if request.method == 'POST':
         # Get values from the form as a dictionary and convert them to a list of floats
