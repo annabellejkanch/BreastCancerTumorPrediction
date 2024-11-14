@@ -34,13 +34,16 @@ scaler = joblib.load('scaler.pkl')
 
 @app.route('/')
 def index():
-    """Render the main page."""
     return render_template('index.html', features=features)
 
-@app.route('/predict', methods=['POST'])
+@app.route('/predict', methods=['GET', 'POST'])
 def predict():
-    """Handle prediction requests."""
-    logger.info("Received prediction request")
+    # If it's a GET request, redirect to home page
+    if request.method == 'GET':
+        logger.info("GET request to /predict, redirecting to index")
+        return redirect(url_for('index'))
+    
+    logger.info("Received POST prediction request")
     
     if model is None or scaler is None:
         logger.error("Model or scaler not loaded")
@@ -94,7 +97,6 @@ def predict():
                              error=f"An unexpected error occurred: {str(e)}",
                              features=features,
                              form_data=request.form)
-
 
 if __name__ == '__main__':
     # Use PORT environment variable if available (for Render)
