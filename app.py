@@ -49,4 +49,4 @@ def predict():
         else:
             prediction = 'Benign Tumor'   
         return render_template("predict.html", prediction = prediction)
-     return render_template('index.html', features=features)
+    return render_template('index.html', features=features)
