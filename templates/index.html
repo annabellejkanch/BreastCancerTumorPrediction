@@ -66,23 +66,6 @@
 <body>
     <h1>Tumor Diagnosis Prediction</h1>
     
-    {% if error %}
-    <div class="error">
-        <h2>Error</h2>
-        <p>{{ error }}</p>
-    </div>
-    {% endif %}
-    
-    {% if prediction %}
-    <div class="prediction">
-        <h2>Prediction Result</h2>
-        <p>Diagnosis: {{ prediction }}</p>
-        {% if confidence %}
-        <p>Confidence: {{ confidence }}</p>
-        {% endif %}
-    </div>
-    {% endif %}
-    
     <form action="{{ url_for('predict') }}" method="POST" id="predictionForm">
         {% for feature in features %}
         <div class="form-group">
@@ -94,25 +77,12 @@
                    required>
         </div>
         {% endfor %}
-        <button type="submit" id="submitBtn">Predict</button>
+        <button type="submit">Predict</button>
     </form>
-    
-    <div class="loading" id="loadingIndicator">
-        Processing prediction...
+    {% if prediction_text %}
+    <div class="prediction">
+        {{ prediction_text }}
     </div>
-
-    <script>
-        // Show loading indicator when form is submitted
-        document.getElementById('predictionForm').addEventListener('submit', function(e) {
-            document.getElementById('loadingIndicator').style.display = 'block';
-            document.getElementById('submitBtn').disabled = true;
-        });
-
-        // If there was an error, re-enable the submit button
-        {% if error %}
-            document.getElementById('submitBtn').disabled = false;
-            document.getElementById('loadingIndicator').style.display = 'none';
-        {% endif %}
-    </script>
+    {% endif %}
 </body>
 </html>
