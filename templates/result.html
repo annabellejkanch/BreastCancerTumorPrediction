@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tumor Diagnosis Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: inline-block;
+            width: 200px;
+            margin-right: 10px;
+        }
+        
+        input[type="text"] {
+            width: 150px;
+            padding: 5px;
+        }
+        
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        .error {
+            color: red;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid red;
+            background-color: #ffe6e6;
+        }
+        
+        .prediction {
+            color: #2196F3;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #2196F3;
+            background-color: #e3f2fd;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tumor Diagnosis Prediction</h1>
+    
+    {% if prediction_text %}
+    <div class="prediction">
+        {{ prediction_text }}
+    </div>
+    {% endif %}
+</body>
+</html>
