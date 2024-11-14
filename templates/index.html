@@ -4,29 +4,90 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tumor Diagnosis Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: inline-block;
+            width: 200px;
+            margin-right: 10px;
+        }
+        
+        input[type="text"] {
+            width: 150px;
+            padding: 5px;
+        }
+        
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        .error {
+            color: red;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid red;
+            background-color: #ffe6e6;
+        }
+        
+        .prediction {
+            color: #2196F3;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #2196F3;
+            background-color: #e3f2fd;
+        }
+    </style>
 </head>
 <body>
     <h1>Tumor Diagnosis Prediction</h1>
+    
+    {% if error %}
+    <div class="error">
+        <h2>Error</h2>
+        <p>{{ error }}</p>
+    </div>
+    {% endif %}
+    
+    {% if prediction %}
+    <div class="prediction">
+        <h2>Prediction Result</h2>
+        <p>Diagnosis: {{ prediction }}</p>
+        {% if confidence %}
+        <p>Confidence: {{ confidence }}</p>
+        {% endif %}
+    </div>
+    {% endif %}
+    
     <form action="/predict" method="POST">
         {% for feature in features %}
+        <div class="form-group">
             <label for="{{ feature }}">{{ feature.replace('_', ' ').title() }}:</label>
-            <input type="text" id="{{ feature }}" name="{{ feature }}" required><br>
+            <input type="text" id="{{ feature }}" name="{{ feature }}" 
+                   pattern="[0-9]*[.]?[0-9]+" 
+                   title="Please enter a valid number"
+                   required>
+        </div>
         {% endfor %}
         <button type="submit">Predict</button>
     </form>
-
-    <!-- Display the prediction or error message -->
-    {% if prediction %}
-        <div id="predictionResult">
-            <h2>Prediction: {{ prediction }}</h2>
-        </div>
-    {% endif %}
-
-    {% if error %}
-        <div id="errorResult">
-            <h2>Error: {{ error }}</h2>
-        </div>
-    {% endif %}
-
 </body>
 </html>
