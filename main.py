@@ -28,7 +28,7 @@ def predict():
     try:
         # Get values from the form
         features = [float(x) for x in request.form.values()]
-        features_array = np.array([features])
+        features_array = [np.array(features)]
         scaled = scaler.transform(features_array)  
         
         # Make prediction
