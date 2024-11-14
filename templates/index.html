@@ -4,12 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tumor Diagnosis Prediction</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <h1>Tumor Diagnosis Prediction</h1>
-    <!-- The action attribute is no longer necessary for AJAX -->
-    <form id="predictionForm" method="POST">
+    <form action="/predict" method="POST">
         {% for feature in features %}
             <label for="{{ feature }}">{{ feature.replace('_', ' ').title() }}:</label>
             <input type="text" id="{{ feature }}" name="{{ feature }}" required><br>
@@ -30,28 +28,5 @@
         </div>
     {% endif %}
 
-    <script>
-        // Use jQuery to handle the form submission with AJAX
-        $('#predictionForm').submit(function(e) {
-            e.preventDefault();  // Prevent default form submission (page reload)
-
-            var formData = $(this).serialize();  // Serialize form data
-
-            $.ajax({
-                url: '/predict',  // This is the URL where the form data will be sent
-                method: 'POST',
-                data: formData,
-                success: function(response) {
-                    // Update the page with the new prediction or error message
-                    $('#predictionResult').html($(response).find('#predictionResult').html());
-                    $('#errorResult').html($(response).find('#errorResult').html());
-                },
-                error: function(xhr, status, error) {
-                    // Handle any AJAX errors here
-                    alert("An error occurred. Please try again.");
-                }
-            });
-        });
-    </script>
 </body>
 </html>
