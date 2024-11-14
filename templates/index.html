@@ -65,7 +65,7 @@
 </head>
 <body>
     <h1>Breast Cancer Tumor Diagnosis</h1>
-    <form action="/predict" method="POST">
+    <form action="/predict" method="post">
         {% for feature in features %}
             <div class="form-group">
                 <label for="{{ feature }}">{{ feature.replace('_', ' ').title() }}:</label>
