@@ -17,7 +17,7 @@ features = ['radius_mean', 'texture_mean', 'perimeter_mean', 'area_mean', 'smoot
            'concavity_worst', 'concave_points_worst', 'symmetry_worst', 'fractal_dimension_worst']
 
 model = load_model('mlp_model.h5')
-#scaler = joblib.load('scaler.pkl')
+scaler = joblib.load('scaler.pkl')
 
 @app.route('/')
 def home():
@@ -28,10 +28,10 @@ def predict():
     try:
         # Get values from the form
         features = [float(x) for x in request.form.values()]
-        features_df = np.array([features])
-        #scaled = scaler.transform(features_df)
+        features_df = pd.DataFrame(features)
+        scaled = scaler.fit_transform(features_df)
         print(f"Features Shape: {features_df.shape}")
-        print(f"Model Shape: {model.input_shape}")
+               
         # Make prediction
         prediction = model.predict(features_df)
         
