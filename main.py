@@ -31,10 +31,6 @@ def ValuePredictor(to_predict_list):
     
     return result[0][0]
 
-@app.route('/')
-def home():
-    return render_template('index.html', features=features)
-
 @app.route('/predict', methods=['GET', 'POST'])
 def predict():
     if request.method == 'POST':
@@ -53,6 +49,12 @@ def predict():
         else:
             prediction = 'Benign Tumor'   
         return render_template("predict.html", prediction = prediction)
+
+@app.route('/')
+def home():
+    return render_template('index.html', features=features)
+
+
 
 
 
