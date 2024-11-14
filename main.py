@@ -48,14 +48,14 @@ def predict():
         result = ValuePredictor(to_predict_list)
         
         # Interpret the result (adjust according to your use case)
-        if result == 1:
+        if result[0][0] == 1:
             prediction = 'Malignant Tumor'
         else:
             prediction = 'Benign Tumor'
         
         return render_template("predict.html", prediction = prediction)
     
-    return render_template("predict.html")
+    return render_template("predict.html", prediction = prediction)
 
 
 
