@@ -31,7 +31,7 @@ def ValuePredictor(to_predict_list):
     
     return result[0][0]
 
-@app.route('/predict', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def predict():
     if request.method == 'POST':
         # Get the form data, make predictions, etc.
@@ -49,16 +49,4 @@ def predict():
         else:
             prediction = 'Benign Tumor'   
         return render_template("predict.html", prediction = prediction)
-
-@app.route('/')
-def home():
-    return render_template('index.html', features=features)
-
-
-
-
-
-#if __name__ == '__main__':
-    # Use PORT environment variable if available (for Render)
-#    port = int(os.environ.get('PORT', 5000))       
-#    app.run(host='0.0.0.0', port=port)
+     return render_template('index.html', features=features)
