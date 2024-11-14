@@ -48,7 +48,7 @@ def predict():
 
     except Exception as e:
         # Handle any errors gracefully
-        logging.error(f"Error: {str(e}")        
+        logging.error(f"Error: {str(e)}")        
         return render_template('predict.html', error=str(e))
 
 if __name__ == '__main__':
