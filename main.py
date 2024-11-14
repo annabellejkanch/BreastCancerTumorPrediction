@@ -45,11 +45,11 @@ def predict():
         diagnosis = 'Malignant' if prediction[0] > 0.5 else 'Benign'
 
         # Render the result back to the template
-        return render_template('index.html', features=features, prediction=diagnosis)
+        return render_template('predict.html', features=features, prediction=diagnosis)
 
     except Exception as e:
         # Handle any errors gracefully
-        return render_template('index.html', features=features, error=str(e))
+        return render_template('predict.html', features=features, error=str(e))
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000)
