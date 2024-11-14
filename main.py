@@ -31,7 +31,7 @@ def ValuePredictor(to_predict_list):
     
     return result[0][0]
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
 def home():
     return render_template('index.html', features=features)
 
@@ -55,7 +55,7 @@ def predict():
         
         return render_template("predict.html", prediction = prediction)
     
-    return render_template("index.html", features=features)
+    return render_template("predict.html")
 
 
 
