@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tumor Diagnosis Prediction</title>
+</head>
+<body>
+    {% if prediction %}
+        <div id="predictionResult">
+            <h2>Prediction: {{ prediction }}</h2>
+        </div>
+    {% endif %}
+    
+    {% if error %}
+        <div id="errorResult">
+            <h2>Error: {{ error }}</h2>
+        </div>
+    {% endif %}
+    
+    <script>
+        // Optional: Add JavaScript for AJAX to handle form submission dynamically without page refresh
+    </script>
+</body>
+</html>
