@@ -30,6 +30,10 @@ def predict():
         # Extract user input from the form based on feature names
         feature_values = [float(request.form.get(feature)) for feature in features]
         input_df = pd.DataFrame([feature_values], columns=features)
+        if len(input_df.shape) == 2
+            print("input_df is a 2D array.")
+        else:
+            print("input_df is not a 2D array.")        
         
         # Preprocess the input (scaling)
         features_scaled = scaler.transform([input_df])
