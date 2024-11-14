@@ -4,21 +4,8 @@ import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from tensorflow.keras.models import load_model
 import joblib
-import os
-import logging
-import sys
 
 app = Flask(__name__)
-
-# Enhanced logging for Render deployment
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.StreamHandler(sys.stdout)
-    ]
-)
-logger = logging.getLogger(__name__)
 
 # List of features for input
 features = ['radius_mean', 'texture_mean', 'perimeter_mean', 'area_mean', 'smoothness_mean', 
@@ -33,70 +20,28 @@ model = load_model('mlp_model.h5')
 scaler = joblib.load('scaler.pkl')
 
 @app.route('/')
-def index():
+def home():
     return render_template('index.html', features=features)
 
-@app.route('/predict', methods=['GET', 'POST'])
+@app.route('/predict', methods=['POST'])
 def predict():
-    # If it's a GET request, redirect to home page
-    if request.method == 'GET':
-        logger.info("GET request to /predict, redirecting to index")
-        return redirect(url_for('index'))
-    
-    logger.info("Received POST prediction request")
-    
-    if model is None or scaler is None:
-        logger.error("Model or scaler not loaded")
-        return render_template('index.html', 
-                             error="Model not properly loaded. Please contact administrator.", 
-                             features=features)
-    
     try:
-        # Log the form data
-        logger.info(f"Form data received: {request.form}")
-        
-        # Extract and convert user input
-        feature_values = []
-        for feature in features:
-            value = request.form.get(feature, '').strip()
-            if not value:
-                raise ValueError(f"Missing value for {feature}")
-            feature_values.append(float(value))
-        
-        # Create DataFrame and log input
-        input_df = pd.DataFrame([feature_values], columns=features)
-        logger.info(f"Processing prediction for input shape: {input_df.shape}")
-        
-        # Preprocess the input
-        features_scaled = scaler.transform(input_df)
+        # Get values from the form
+        features = [float(x) for x in request.form.values()]
+        features_array = [np.array(features)]
         
         # Make prediction
-        prediction = model.predict(features_scaled)
-        probability = float(prediction[0][0])
-        diagnosis = 'Malignant' if probability > 0.5 else 'Benign'
-        confidence = probability if probability > 0.5 else 1 - probability
+        prediction = model.predict(features_array)
         
-        logger.info(f"Prediction complete: {diagnosis} with {confidence:.2%} confidence")
+        # Convert prediction to string
+        output = str(prediction[0])
         
-        return render_template('index.html',
-                             prediction=diagnosis,
-                             confidence=f"{confidence:.2%}",
-                             features=features,
-                             form_data=request.form)
-                             
-    except ValueError as ve:
-        logger.warning(f"Validation error: {str(ve)}")
-        return render_template('index.html',
-                             error=f"Invalid input: {str(ve)}",
-                             features=features,
-                             form_data=request.form)
-                             
+        return render_template('index.html', 
+                             prediction_text=f'Predicted Tumor Type: {output}')
     except Exception as e:
-        logger.error(f"Prediction error: {str(e)}")
-        return render_template('index.html',
-                             error=f"An unexpected error occurred: {str(e)}",
-                             features=features,
-                             form_data=request.form)
+        return render_template('index.html', 
+                             prediction_text=f'Error: {str(e)}')
+
 
 if __name__ == '__main__':
     # Use PORT environment variable if available (for Render)
