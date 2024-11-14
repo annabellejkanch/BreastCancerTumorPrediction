@@ -9,8 +9,14 @@ import logging
 
 app = Flask(__name__)
 
-# Set up logging
-logging.basicConfig(level=logging.INFO)
+# Enhanced logging for Render deployment
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(sys.stdout)
+    ]
+)
 logger = logging.getLogger(__name__)
 
 # List of features for input
@@ -22,35 +28,8 @@ features = ['radius_mean', 'texture_mean', 'perimeter_mean', 'area_mean', 'smoot
            'perimeter_worst', 'area_worst', 'smoothness_worst', 'compactness_worst', 
            'concavity_worst', 'concave_points_worst', 'symmetry_worst', 'fractal_dimension_worst']
 
-def load_ml_components():
-    """Load the model and scaler with error handling."""
-    try:
-        model = load_model('mlp_model.h5')
-        scaler = joblib.load('scaler.pkl')
-        return model, scaler
-    except Exception as e:
-        logger.error(f"Error loading ML components: {str(e)}")
-        raise RuntimeError("Failed to load machine learning components")
-
-def validate_input(feature_values):
-    """Validate input values."""
-    if len(feature_values) != len(features):
-        raise ValueError(f"Expected {len(features)} features, got {len(feature_values)}")
-    
-    for value in feature_values:
-        if not isinstance(value, (int, float)):
-            raise ValueError("All inputs must be numeric values")
-        if value < 0:
-            raise ValueError("All inputs must be positive values")
-
-# Load model and scaler at startup
-try:
-    model, scaler = load_ml_components()
-    logger.info("Successfully loaded model and scaler")
-except Exception as e:
-    logger.error(f"Failed to load model or scaler: {str(e)}")
-    model = None
-    scaler = None
+model = load_model(model_path)
+scaler = joblib.load(scaler_path)
 
 @app.route('/')
 def index():
@@ -60,12 +39,18 @@ def index():
 @app.route('/predict', methods=['POST'])
 def predict():
     """Handle prediction requests."""
+    logger.info("Received prediction request")
+    
     if model is None or scaler is None:
+        logger.error("Model or scaler not loaded")
         return render_template('index.html', 
                              error="Model not properly loaded. Please contact administrator.", 
                              features=features)
     
     try:
+        # Log the form data
+        logger.info(f"Form data received: {request.form}")
+        
         # Extract and convert user input
         feature_values = []
         for feature in features:
@@ -73,41 +58,44 @@ def predict():
             if not value:
                 raise ValueError(f"Missing value for {feature}")
             feature_values.append(float(value))
-
-        # Validate input
-        validate_input(feature_values)
         
         # Create DataFrame and log input
         input_df = pd.DataFrame([feature_values], columns=features)
-        logger.info(f"Received input shape: {input_df.shape}")
+        logger.info(f"Processing prediction for input shape: {input_df.shape}")
         
         # Preprocess the input
         features_scaled = scaler.transform(input_df)
         
         # Make prediction
         prediction = model.predict(features_scaled)
-        probability = float(prediction[0][0])  # Convert to Python float
+        probability = float(prediction[0][0])
         diagnosis = 'Malignant' if probability > 0.5 else 'Benign'
         confidence = probability if probability > 0.5 else 1 - probability
         
-        logger.info(f"Prediction made: {diagnosis} with {confidence:.2%} confidence")
+        logger.info(f"Prediction complete: {diagnosis} with {confidence:.2%} confidence")
         
         return render_template('index.html',
                              prediction=diagnosis,
                              confidence=f"{confidence:.2%}",
-                             features=features)
+                             features=features,
+                             form_data=request.form)
                              
     except ValueError as ve:
         logger.warning(f"Validation error: {str(ve)}")
         return render_template('index.html',
                              error=f"Invalid input: {str(ve)}",
-                             features=features)
+                             features=features,
+                             form_data=request.form)
                              
     except Exception as e:
         logger.error(f"Prediction error: {str(e)}")
         return render_template('index.html',
-                             error="An unexpected error occurred. Please try again.",
-                             features=features)
+                             error=f"An unexpected error occurred: {str(e)}",
+                             features=features,
+                             form_data=request.form)
+
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000, debug=False)
+    # Use PORT environment variable if available (for Render)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
