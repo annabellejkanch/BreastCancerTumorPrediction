@@ -55,7 +55,7 @@ def predict():
         
         return render_template("predict.html", prediction = prediction)
     
-    return render_template("predict.html", prediction = prediction)
+    return render_template("predict.html")
 
 
 
