@@ -23,7 +23,7 @@ scaler = joblib.load('scaler.pkl')
 def index():
     return render_template('index.html', features=features)
 
-@app.route('/', methods=['POST'])
+@app.route('/predict', methods=['POST'])
 def predict():
     try:
         # Extract user input from the form based on feature names
