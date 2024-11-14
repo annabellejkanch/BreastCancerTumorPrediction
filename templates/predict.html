@@ -9,7 +9,7 @@
     {% extends "index.html "%}
     <h1>Prediction Result</h1>
     {% block content %}
-    <h2> {{ prediction }}</h2>
+    <h2 action="/predict" method="get"> {{ prediction }}</h2>
     {% endblock %}
 
     <!-- Optionally, link back to the home page or prediction form -->
