@@ -3,7 +3,6 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from tensorflow.keras.models import load_model
-from tensorflow.keras.optimizers import Adam
 import joblib
 
 app = Flask(__name__)
@@ -18,8 +17,9 @@ features = ['radius_mean', 'texture_mean', 'perimeter_mean', 'area_mean', 'smoot
 
 # Load model and scaler
 model = load_model('mlp_model.h5')
-model.compile(optimizer=Adam(learning_rate=0.0005), loss='binary_crossentropy', metrics=['accuracy'])
 scaler = joblib.load('scaler.pkl')
+
+logging.basicConfig(level=logging.DEBUG)
 
 @app.route('/')
 def index():
@@ -32,10 +32,8 @@ def predict():
         feature_values = [float(request.form.get(feature)) for feature in features]
         input_df = pd.DataFrame([feature_values], columns=features)
         print(input_df.shape)
-        if len(input_df.shape) == 2:
-            print("input_df is a 2D array.")
-        else:
-            print("input_df is not a 2D array.")        
+        logging.debug(f"Recieved Input: {input_df}")
+        logging.debug(f"Input Shape: {input_df.shape}")
         
         # Preprocess the input (scaling)
         features_scaled = scaler.transform(input_df)
@@ -43,13 +41,15 @@ def predict():
         # Make prediction
         prediction = model.predict(features_scaled)
         diagnosis = 'Malignant' if prediction[0] > 0.5 else 'Benign'
+        logging.debug(f"Prediction: {diagnosis}")        
 
         # Render the result back to the template
-        return render_template('predict.html', features=features, prediction=diagnosis)
+        return render_template('predict.html', prediction=diagnosis)
 
     except Exception as e:
         # Handle any errors gracefully
-        return render_template('predict.html', features=features, error=str(e))
+        logging.error(f"Error: {str(e}")        
+        return render_template('predict.html', error=str(e))
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000)
