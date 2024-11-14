@@ -38,7 +38,7 @@ def predict():
             print("input_df is not a 2D array.")        
         
         # Preprocess the input (scaling)
-        features_scaled = scaler.transform([input_df])
+        features_scaled = scaler.transform(input_df)
 
         # Make prediction
         prediction = model.predict(features_scaled)
