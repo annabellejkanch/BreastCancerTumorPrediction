@@ -27,7 +27,7 @@ def ValuePredictor(to_predict_list):
     #scaled_data = scaler.transform(to_predict)
     
     # Make prediction using the model
-    result = model.predict(scaled_data)
+    result = model.predict(to_predict)
     
     return result
 
