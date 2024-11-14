@@ -52,7 +52,7 @@ def predict():
         else:
             prediction = 'Benign Tumor'
         
-        return render_template("result.html", prediction=prediction)
+        return render_template("predict.html", prediction=prediction)
 
 if __name__ == '__main__':
     # Use PORT environment variable if available (for Render)
