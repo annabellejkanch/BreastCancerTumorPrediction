@@ -50,12 +50,11 @@ def predict():
         # Interpret the result (adjust according to your use case)
         if result[0][0] == 1:
             prediction = 'Malignant Tumor'
+            return prediction       
         else:
             prediction = 'Benign Tumor'
-        
-        return prediction
-    
-    return render_template("predict.html", prediction = prediction)
+            return prediction      
+        return render_template("predict.html", prediction = prediction)
 
 
 
