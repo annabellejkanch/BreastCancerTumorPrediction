@@ -28,9 +28,8 @@ def predict():
     try:
         # Get values from the form
         features = [float(x) for x in request.form.values()]
-        features_df = [np.array(features)]
-        #scaled = scaler.transform(features_df) 
-        features_df = features_df.reshape(1, -1)   
+        features_df = np.array(features).reshape(1, -1)
+        #scaled = scaler.transform(features_df)  
         
         # Make prediction
         prediction = model.predict(features_df)
