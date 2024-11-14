@@ -19,29 +19,40 @@ features = ['radius_mean', 'texture_mean', 'perimeter_mean', 'area_mean', 'smoot
 model = load_model('mlp_model.h5')
 scaler = joblib.load('scaler.pkl')
 
+def ValuePredictor(to_predict_list):
+    # Convert the input list to a numpy array and reshape it to (1, 30)
+    to_predict = np.array(to_predict_list).reshape(1, 30)
+    
+    # Scale the input data
+    scaled_data = scaler.transform(to_predict)
+    
+    # Make prediction using the model
+    result = model.predict(scaled_data)
+    
+    return result[0][0]
+
 @app.route('/')
 def home():
     return render_template('index.html', features=features)
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    # Get values from the form
-    feature_val = [float(x) for x in request.form.values()]
-    features_df = pd.DataFrame([feature_val], columns=features)
-               
-    scaled = scaler.transform(features_df)
-               
-    print(f"Features Shape: {features_df.shape}")
-           
-               
-           # Make prediction
-    prediction = model.predict(scaled)
-           
-           # Convert prediction to string
-    output = str(prediction)
-           
-    return render_template('index.html', prediction_text=f'Predicted Tumor Type: {output}')
-
+    if request.method == 'POST':
+        # Get values from the form as a dictionary and convert them to a list of floats
+        to_predict_list = request.form.to_dict()
+        to_predict_list = list(to_predict_list.values())
+        to_predict_list = list(map(float, to_predict_list))  # Ensure the input is floats
+        
+        # Use the ValuePredictor function to get the prediction
+        result = ValuePredictor(to_predict_list)
+        
+        # Interpret the result (adjust according to your use case)
+        if result == 1:
+            prediction = 'Malignant Tumor'
+        else:
+            prediction = 'Benign Tumor'
+        
+        return render_template("result.html", prediction=prediction)
 
 if __name__ == '__main__':
     # Use PORT environment variable if available (for Render)
