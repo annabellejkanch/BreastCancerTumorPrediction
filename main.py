@@ -29,8 +29,8 @@ features = ['radius_mean', 'texture_mean', 'perimeter_mean', 'area_mean', 'smoot
            'perimeter_worst', 'area_worst', 'smoothness_worst', 'compactness_worst', 
            'concavity_worst', 'concave_points_worst', 'symmetry_worst', 'fractal_dimension_worst']
 
-model = load_model(model_path)
-scaler = joblib.load(scaler_path)
+model = load_model('mlp_model.h5')
+scaler = joblib.load('scaler.pkl')
 
 @app.route('/')
 def index():
