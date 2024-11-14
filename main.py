@@ -50,7 +50,7 @@ def predict():
             prediction = 'Benign Tumor'   
         return render_template("predict.html", prediction = prediction)
 
-@app.route('/home')
+@app.route('/')
 def home():
     return render_template('index.html', features=features)
 
