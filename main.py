@@ -24,12 +24,12 @@ def ValuePredictor(to_predict_list):
     to_predict = np.array(to_predict_list).reshape(1, 30)
     
     # Scale the input data
-    scaled_data = scaler.transform(to_predict)
+    #scaled_data = scaler.transform(to_predict)
     
     # Make prediction using the model
     result = model.predict(scaled_data)
     
-    return result[0][0]
+    return result
 
 @app.route('/')
 def home():
