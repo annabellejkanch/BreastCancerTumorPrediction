@@ -28,10 +28,11 @@ def predict():
     try:
         # Get values from the form
         features = [float(x) for x in request.form.values()]
-        features_array = [np.array(features)]
+        features_array = np.array([features])
+        scaled = scaler.transform(features_array)  
         
         # Make prediction
-        prediction = model.predict(features_array)
+        prediction = model.predict(scaled)
         
         # Convert prediction to string
         output = str(prediction[0])
