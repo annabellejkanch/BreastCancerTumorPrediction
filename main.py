@@ -35,7 +35,7 @@ def predict():
         prediction = model.predict(features_df)
         
         # Convert prediction to string
-        output = str(prediction[0])
+        output = str(prediction[0][0])
         
         return render_template('index.html', 
                              prediction_text=f'Predicted Tumor Type: {output}')
