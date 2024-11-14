@@ -65,6 +65,7 @@
 </head>
 <body>
     <h1>Breast Cancer Tumor Diagnosis</h1>
+    {% block content %}
     <form action="#" method="post">
         {% for feature in features %}
             <div class="form-group">
@@ -74,5 +75,6 @@
         {% endfor %}
         <button type="submit">Predict</button>
     </form>
+    {% endblock %}
 </body>
 </html>
