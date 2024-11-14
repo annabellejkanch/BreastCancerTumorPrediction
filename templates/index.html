@@ -7,43 +7,42 @@
 </head>
 <body>
     <h1>Tumor Diagnosis Prediction</h1>
-    <form action="/predict" method="POST">
-        {% for feature in features %}
-            <label for="{{ feature }}">{{ feature.replace('_', ' ').title() }}:</label>
-            <input type="text" id="{{ feature }}" name="{{ feature }}" required><br>
-        {% endfor %}
-        <button type="submit">Predict</button>
-    </form>
+        <form action="/predict" method="POST">
+            {% for feature in features %}
+                <label for="{{ feature }}">{{ feature.replace('_', ' ').title() }}:</label>
+                <input type="text" id="{{ feature }}" name="{{ feature }}" required><br>
+            {% endfor %}
+            <button type="submit">Predict</button>
+        </form>
+        {% if prediction %}
+            <div id="predictionResult">
+                <h2>Prediction: {{ prediction }}</h2>
+            </div>
+        {% endif %}
 
-    {% if prediction %}
-        <div id="predictionResult">
-            <h2>Prediction: {{ prediction }}</h2>
-        </div>
-    {% endif %}
-    
-    {% if error %}
-        <div id="errorResult">
-            <h2>Error: {{ error }}</h2>
-        </div>
-    {% endif %}
-    
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $('form').submit(function(e) {
-            e.preventDefault();  // Prevent page reload
-            var formData = $(this).serialize();  // Serialize form data
-    
-            $.ajax({
-                url: '/predict',
-                method: 'POST',
-                data: formData,
-                success: function(response) {
-                    // Update the page with the prediction or error message
-                    $('#predictionResult').html($(response).find('#predictionResult').html());
-                    $('#errorResult').html($(response).find('#errorResult').html());
-                }
+        {% if error %}
+            <div id="errorResult">
+                <h2>Error: {{ error }}</h2>
+            </div>
+        {% endif %}
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            $('form').submit(function(e) {
+                e.preventDefault();  // Prevent page reload
+                var formData = $(this).serialize();  // Serialize form data
+
+                $.ajax({
+                    url: '/predict',
+                    method: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        // Update the page with the prediction or error message
+                        $('#predictionResult').html($(response).find('#predictionResult').html());
+                        $('#errorResult').html($(response).find('#errorResult').html());
+                    }
+                });
             });
-        });
-    </script>
+        </script>
 </body>
 </html>
