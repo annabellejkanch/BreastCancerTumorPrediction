@@ -29,8 +29,9 @@ def predict():
         # Get values from the form
         features = [float(x) for x in request.form.values()]
         features_df = np.array([features])
-        #scaled = scaler.transform(features_df)  
-        
+        #scaled = scaler.transform(features_df)
+        print(f"Features Shape: {features_df.shape}")
+        print(f"Model Shape: {model.input_shape}")
         # Make prediction
         prediction = model.predict(features_df)
         
