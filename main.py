@@ -29,11 +29,15 @@ def predict():
         # Get values from the form
         features = [float(x) for x in request.form.values()]
         features_df = pd.DataFrame(features)
-        scaled = scaler.fit_transform(features_df)
+        scaled = scaler.transform(features_df)
+        scaled = pd.DataFrame(scaled)
+        scaled_array = scaled_df.to_numpy()
+        reshaped = scaled_array.reshape(1, -1)
         print(f"Features Shape: {features_df.shape}")
+           
                
         # Make prediction
-        prediction = model.predict(features_df)
+        prediction = model.predict(reshaped)
         
         # Convert prediction to string
         output = str(prediction[0][0])
