@@ -21,13 +21,13 @@ scaler = joblib.load('scaler.pkl')
 
 def ValuePredictor(to_predict_list):
     # Convert the input list to a numpy array and reshape it to (1, 30)
-    to_predict = np.array(to_predict_list.values).reshape(1, 30)
+    to_predict = np.array(to_predict_list).reshape(1, 30)
     
     # Scale the input data
     scaled_data = scaler.transform(to_predict)
     
     # Make prediction using the model
-    result = model.predict(to_predict)
+    result = model.predict(scaled_data.values)
     
     return result[0][0]
 
