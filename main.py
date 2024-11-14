@@ -17,6 +17,7 @@ features = ['radius_mean', 'texture_mean', 'perimeter_mean', 'area_mean', 'smoot
 
 # Load model and scaler
 model = load_model('mlp_model.h5')
+model.compile(optimizer=Adam(learning_rate=0.0005), loss='binary_crossentropy', metrics=['accuracy'])
 scaler = joblib.load('scaler.pkl')
 
 @app.route('/')
