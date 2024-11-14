@@ -65,6 +65,10 @@
 </head>
 <body>
     <h1>Tumor Diagnosis Prediction</h1>
-    <h2>Prediction Result: {{ prediction }}</h2>
+    {% if prediction %}
+        <h2>The tumor is: {{ prediction }}</h2>
+    {% else %}
+        <h2>No prediction made yet. Please submit your data.</h2>
+    {% endif %}
 </body>
 </html>
