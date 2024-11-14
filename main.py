@@ -42,12 +42,12 @@ def predict():
         print(f"Prediction: {diagnosis}")        
 
         # Render the result back to the template
-        return render_template('predict.html', prediction=diagnosis)
+        return render_template('index.html', prediction=diagnosis, features=features)
 
     except Exception as e:
         # Handle any errors gracefully
         print(f"Error: {str(e)}")        
-        return render_template('predict.html', error=str(e))
+        return render_template('index.html', error=str(e), features=features)
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000)
