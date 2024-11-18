@@ -46,7 +46,7 @@ def home():
             result = ValuePredictor(to_predict_list)
             
             # Interpret the result
-            prediction = 'Malignant Tumor' if result[0][0] = 1 else 'Benign Tumor'
+            prediction = 'Malignant Tumor' if result[0][0] == 1 else 'Benign Tumor'
             
         except Exception as e:
             prediction = f"Error: {str(e)}"
