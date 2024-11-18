@@ -1,9 +1,10 @@
-from flask import Flask, render_template, request, jsonify
-import numpy as np
+from flask import Flask, render_template, request
+import numpy as pd
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from tensorflow.keras.models import load_model
 import joblib
+import os
 
 app = Flask(__name__)
 
@@ -16,11 +17,12 @@ features = ['radius_mean', 'texture_mean', 'perimeter_mean', 'area_mean', 'smoot
            'perimeter_worst', 'area_worst', 'smoothness_worst', 'compactness_worst', 
            'concavity_worst', 'concave_points_worst', 'symmetry_worst', 'fractal_dimension_worst']
 
+# Load model and scaler
 model = load_model('mlp_model.h5')
 scaler = joblib.load('scaler.pkl')
 
 def ValuePredictor(to_predict_list):
-    # Convert the input list to a numpy array and reshape it to (1, 30)
+    # Convert the input list to a DataFrame
     to_predict = pd.DataFrame([to_predict_list], columns=features)
     
     # Scale the input data
@@ -29,31 +31,28 @@ def ValuePredictor(to_predict_list):
     # Make prediction using the model
     result = model.predict(scaled_data)
     
-    return result[0][0]
+    return result
 
-@app.route("/")
-return render_template("index.html", prediction = prediction)
-
-@app.route("/", methods=['POST', 'GET'])
-def predict():
+@app.route("/", methods=['GET', 'POST'])
+def home():
+    prediction = None
     if request.method == 'POST':
-        # Get the form data, make predictions, etc.
-        to_predict_list = request.form.to_dict()
-        to_predict_list = list(to_predict_list.values())
-        to_predict_list = list(map(float, to_predict_list))# Ensure the input is floats
-        print(to_predict_list) 
+        try:
+            # Get the form data and convert to list of floats
+            to_predict_list = list(request.form.values())
+            to_predict_list = list(map(float, to_predict_list))
+            
+            # Get prediction
+            result = ValuePredictor(to_predict_list)
+            
+            # Interpret the result
+            prediction = 'Malignant Tumor' if result[0][0] = 1 else 'Benign Tumor'
+            
+        except Exception as e:
+            prediction = f"Error: {str(e)}"
+    
+    return render_template("index.html", prediction=prediction, features=features)
 
-        # Use the ValuePredictor function to get the prediction
-        result = ValuePredictor(to_predict_list)
-        
-        # Interpret the result (adjust according to your use case)
-        if result[0][0] == 1:
-            prediction = 'Malignant Tumor'
-        else:
-            prediction = 'Benign Tumor'   
-        return render_template("index.html", prediction = prediction)
-               
-#if __name__ == '__main__':
-    # Use PORT environment variable if available (for Render)
-#    port = int(os.environ.get('PORT', 5000))       
-#    app.run(host='0.0.0.0', port=port)
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
