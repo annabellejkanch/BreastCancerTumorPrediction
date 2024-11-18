@@ -65,6 +65,7 @@
 </head>
 <body>
     <h1>Breast Cancer Tumor Diagnosis</h1>
+    {{prediction}}
     {% block content %}
     <form action="/predict" method="post">
         {% for feature in features %}
@@ -73,7 +74,7 @@
                 <input type="text" id="{{ feature }}" name="{{ feature }}" required>
             </div>
         {% endfor %}
-        <button type="submit">Predict</button>
+        <button type="submit" value = "send">Predict</button>
     </form>
     {% endblock %}
 </body>
