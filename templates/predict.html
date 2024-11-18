@@ -6,11 +6,8 @@
     <title>Prediction Result</title>
 </head>
 <body>
-    {% extends "index.html "%}
-    <h1>Prediction Result</h1>
-    {% block content %}
-    <h2 action="/predict" method="get"> {{ prediction }}</h2>
-    {% endblock %}
+
+    {{prediction}}
 
     <!-- Optionally, link back to the home page or prediction form -->
     <a href="/">Go Back</a>
