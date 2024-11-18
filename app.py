@@ -26,7 +26,7 @@ def home():
     return render_template("temp.html")
   
 @app.route("/predict", methods=["POST"])
-def predict:
+def predict():
     float_features = [float(x) for x in request.form.values()]
     to_predict = pd.DataFrame([float_features], columns = features)
     scaled_data = scaler.transform(to_predict)
