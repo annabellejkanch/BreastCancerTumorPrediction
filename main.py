@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-import numpy as pd
+import numpy as np
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from tensorflow.keras.models import load_model
@@ -22,24 +22,59 @@ model = load_model('mlp_model.h5')
 scaler = joblib.load('scaler.pkl')
 
 def ValuePredictor(to_predict_list):
-    # Convert the input list to a DataFrame
-    to_predict = pd.DataFrame([to_predict_list], columns=features)
-    
-    # Scale the input data
-    scaled_data = scaler.transform(to_predict)
-    
-    # Make prediction using the model
-    result = model.predict(scaled_data)
-    
-    return result
+    try:
+        # Convert the input list to a DataFrame
+        to_predict = pd.DataFrame([to_predict_list], columns=features)
+        print("Input data shape:", to_predict.shape)  # Debug print
+        
+        # Scale the input data
+        scaled_data = scaler.transform(to_predict)
+        print("Scaled data shape:", scaled_data.shape)  # Debug print
+        
+        # Make prediction using the model
+        result = model.predict(scaled_data)
+        print("Prediction result:", result)  # Debug print
+        
+        return result
+    except Exception as e:
+        print(f"Error in ValuePredictor: {str(e)}")
+        return None
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
-    print("Method:", request.method)
-    if request.method == 'POST':
-        print("Form data:", request.form)
-    return render_template("index.html", prediction=None, features=features)
+    prediction = None
+    
+    try:
+        if request.method == 'POST':
+            print("Received POST request")  # Debug print
+            print("Form data:", request.form)  # Debug print
+            
+            # Get the form data and convert to list of floats
+            to_predict_list = []
+            for feature in features:
+                value = request.form.get(feature)
+                print(f"Feature {feature}: {value}")  # Debug print
+                to_predict_list.append(float(value))
+            
+            print("Processed input list:", to_predict_list)  # Debug print
+            
+            # Get prediction
+            result = ValuePredictor(to_predict_list)
+            
+            if result is not None:
+                # Interpret the result
+                print("Raw prediction:", result)  # Debug print
+                prediction = 'Malignant Tumor' if result[0][0] == 1 else 'Benign Tumor'
+                print("Final prediction:", prediction)  # Debug print
+            else:
+                prediction = "Error: Could not make prediction"
+                
+    except Exception as e:
+        print(f"Error in home route: {str(e)}")
+        prediction = f"Error: {str(e)}"
+    
+    return render_template("index.html", prediction=prediction, features=features)
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=port, debug=True)
