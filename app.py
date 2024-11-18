@@ -33,7 +33,7 @@ def predict:
     result = model.predict(scaled_data)
     if result == 1:
       result = "Malginant"
-    else"
+    else:
       result = "Benign"
     return render_template("temp.html", prediction_text = "The predicted tumor is {}".format(result))
 
