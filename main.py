@@ -31,7 +31,7 @@ def ValuePredictor(to_predict_list):
     
     return result[0][0]
 
-@app.route("/"
+@app.route("/")
 @app.route("/", methods=['POST', 'GET'])
 def predict():
     if request.method == 'POST':
