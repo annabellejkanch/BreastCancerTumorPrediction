@@ -1,58 +1,177 @@
 <!DOCTYPE html>
-<html >
-<!--From https://codepen.io/frytyler/pen/EGdtg-->
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>ML API</title>
-<!--  <link rel="style"href="style.css">-->
-<!--    <link rel="stylesheet" href="styles.css">-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Breast Cancer Prediction</title>
+  <style>
+    :root {
+      --primary-color: #2563eb;
+      --secondary-color: #3b82f6;
+      --background-color: #f0f9ff;
+      --card-color: #ffffff;
+      --text-primary: #1e293b;
+      --text-secondary: #64748b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+    }
+
+    .card {
+      background: var(--card-color);
+      border-radius: 1rem;
+      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+      padding: 2rem;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+
+    .input-group {
+      margin-bottom: 1rem;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      transition: all 0.2s;
+      background-color: white;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    input::placeholder {
+      color: var(--text-secondary);
+    }
+
+    button {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s;
+      margin-top: 1rem;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+    }
+
+    .prediction {
+      margin-top: 2rem;
+      padding: 1rem;
+      background-color: #f8fafc;
+      border-radius: 0.5rem;
+      text-align: center;
+    }
+
+    .prediction h2 {
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 1rem;
+      }
+      
+      .card {
+        padding: 1rem;
+      }
+    }
+  </style>
 </head>
-
 <body>
- <div class="login">
-	<h1>Breast Cancer Prediction Model</h1>
-    <form action="{{ url_for('predict')}}"method="post">
-        <input type="text" name="radius_mean" placeholder="radius_mean" required="required" />
-        <input type="text" name="texture_mean" placeholder="texture_mean" required="required" />
-        <input type="text" name="perimeter_mean" placeholder="perimeter_mean" required="required" />
-        <input type="text" name="area_mean" placeholder="area_mean" required="required" />
-        <input type="text" name="smoothness_mean" placeholder="smoothness_mean" required="required" />
-        <input type="text" name="compactness_mean" placeholder="compactness_mean" required="required" />
-        <input type="text" name="concavity_mean" placeholder="concavity_mean" required="required" />
-        <input type="text" name="concave_points_mean" placeholder="concave_points_mean" required="required" />
-        <input type="text" name="symmetry_mean" placeholder="symmetry_mean" required="required" />
-        <input type="text" name="fractal_dimension_mean" placeholder="fractal_dimension_mean" required="required" />
-        <input type="text" name="radius_se" placeholder="radius_se" required="required" />
-        <input type="text" name="texture_se" placeholder="texture_se" required="required" />
-        <input type="text" name="perimeter_se" placeholder="perimeter_se" required="required" />
-        <input type="text" name="area_se" placeholder="area_se" required="required" />
-        <input type="text" name="smoothness_se" placeholder="smoothness_se" required="required" />
-        <input type="text" name="compactness_se" placeholder="compactness_se" required="required" />
-        <input type="text" name="concavity_se" placeholder="concavity_se" required="required" />
-        <input type="text" name="concave_points_se" placeholder="concave_points_se" required="required" />
-        <input type="text" name="symmetry_se" placeholder="symmetry_se" required="required" />
-        <input type="text" name="fractal_dimension_se" placeholder="fractal_dimension_se" required="required" />
-        <input type="text" name="radius_worst" placeholder="radius_worst" required="required" />
-        <input type="text" name="texture_worst" placeholder="texture_worst" required="required" />
-        <input type="text" name="perimeter_worst" placeholder="perimeter_worst" required="required" />
-        <input type="text" name="area_worst" placeholder="area_worst" required="required" />
-        <input type="text" name="smoothness_worst" placeholder="smoothness_worst" required="required" />
-        <input type="text" name="compactness_worst" placeholder="compactness_worst" required="required" />
-        <input type="text" name="concavity_worst" placeholder="concavity_worst" required="required" />
-        <input type="text" name="concave_points_worst" placeholder="concave_points_worst" required="required" />
-        <input type="text" name="symmetry_worst" placeholder="symmetry_worst" required="required" />
-        <input type="text" name="fractal_dimension_worst" placeholder="fractal_dimension_worst" required="required"/>
-        <button type="submit" class="btn btn-primary btn-block btn-large">Predict</button>
-    </form>
+  <div class="container">
+    <div class="header">
+      <h1>Breast Cancer Prediction Model</h1>
+    </div>
+    
+    <div class="card">
+      <form action="{{ url_for('predict')}}" method="post">
+        <div class="form-grid">
+          <input type="number" step="0.001" name="radius_mean" placeholder="Radius Mean" required />
+          <input type="number" step="0.001" name="texture_mean" placeholder="Texture Mean" required />
+          <input type="number" step="0.001" name="perimeter_mean" placeholder="Perimeter Mean" required />
+          <input type="number" step="0.001" name="area_mean" placeholder="Area Mean" required />
+          <input type="number" step="0.001" name="smoothness_mean" placeholder="Smoothness Mean" required />
+          <input type="number" step="0.001" name="compactness_mean" placeholder="Compactness Mean" required />
+          <input type="number" step="0.001" name="concavity_mean" placeholder="Concavity Mean" required />
+          <input type="number" step="0.001" name="concave_points_mean" placeholder="Concave Points Mean" required />
+          <input type="number" step="0.001" name="symmetry_mean" placeholder="Symmetry Mean" required />
+          <input type="number" step="0.001" name="fractal_dimension_mean" placeholder="Fractal Dimension Mean" required />
+          <input type="number" step="0.001" name="radius_se" placeholder="Radius Standard Error" required />
+          <input type="number" step="0.001" name="texture_se" placeholder="Texture Standard Error" required />
+          <input type="number" step="0.001" name="perimeter_se" placeholder="Perimeter Standard Error" required />
+          <input type="number" step="0.001" name="area_se" placeholder="Area Standard Error" required />
+          <input type="number" step="0.001" name="smoothness_se" placeholder="Smoothness Standard Error" required />
+          <input type="number" step="0.001" name="compactness_se" placeholder="Compactness Standard Error" required />
+          <input type="number" step="0.001" name="concavity_se" placeholder="Concavity Standard Error" required />
+          <input type="number" step="0.001" name="concave_points_se" placeholder="Concave Points Standard Error" required />
+          <input type="number" step="0.001" name="symmetry_se" placeholder="Symmetry Standard Error" required />
+          <input type="number" step="0.001" name="fractal_dimension_se" placeholder="Fractal Dimension Standard Error" required />
+          <input type="number" step="0.001" name="radius_worst" placeholder="Radius Worst Value" required />
+          <input type="number" step="0.001" name="texture_worst" placeholder="Texture Worst Value" required />
+          <input type="number" step="0.001" name="perimeter_worst" placeholder="Perimeter Worst Value" required />
+          <input type="number" step="0.001" name="area_worst" placeholder="Area Worst Value" required />
+          <input type="number" step="0.001" name="smoothness_worst" placeholder="Smoothness Worst Value" required />
+          <input type="number" step="0.001" name="compactness_worst" placeholder="Compactness Worst Value" required />
+          <input type="number" step="0.001" name="concavity_worst" placeholder="Concavity Worst Value" required />
+          <input type="number" step="0.001" name="concave_points_worst" placeholder="Concave Points Worst Value" required />
+          <input type="number" step="0.001" name="symmetry_worst" placeholder="Symmetry Worst Value" required />
+          <input type="number" step="0.001" name="fractal_dimension_worst" placeholder="Fractal Dimesnsion Worst Value" required />
+        </div>
 
-   <br>
-   <br>
-     <h1 id="predi">
-   {{ prediction_text }}
-     </h1>
+        <button type="submit">Generate Prediction</button>
+      </form>
 
- </div>
-
-
+      <div class="prediction">
+        <h2>The predicted tumor is: </h2>
+        <p id="prediction-text">{{ prediction_text }}</p>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
