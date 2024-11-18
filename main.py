@@ -35,23 +35,10 @@ def ValuePredictor(to_predict_list):
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
-    prediction = None
+    print("Method:", request.method)
     if request.method == 'POST':
-        try:
-            # Get the form data and convert to list of floats
-            to_predict_list = list(request.form.values())
-            to_predict_list = list(map(float, to_predict_list))
-            
-            # Get prediction
-            result = ValuePredictor(to_predict_list)
-            
-            # Interpret the result
-            prediction = 'Malignant Tumor' if result[0][0] == 1 else 'Benign Tumor'
-            
-        except Exception as e:
-            prediction = f"Error: {str(e)}"
-    
-    return render_template("index.html", prediction=prediction, features=features)
+        print("Form data:", request.form)
+    return render_template("index.html", prediction=None, features=features)
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
